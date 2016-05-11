@@ -4,8 +4,6 @@ import net.sf.json.JSONObject;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 import org.jvnet.hudson.crypto.CertificateUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.lanwen.jenkins.juseppe.beans.Signature;
 import ru.lanwen.jenkins.juseppe.beans.UpdateSite;
 import ru.lanwen.jenkins.juseppe.util.Marshaller;
@@ -31,7 +29,9 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.collect.Lists.newArrayList;
+import java.util.logging.Logger;
 import static java.security.Security.addProvider;
+import java.util.logging.Level;
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang3.Validate.isInstanceOf;
 import static ru.lanwen.jenkins.juseppe.props.Props.props;
@@ -41,7 +41,7 @@ import static ru.lanwen.jenkins.juseppe.props.Props.props;
  */
 public class Signer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Signer.class);
+    private static final Logger LOG = Logger.getLogger(Signer.class.getName());
 
     /**
      * Private key to sign the update center. Must be used in conjunction with certificates
@@ -66,7 +66,7 @@ public class Signer {
      * If the configuration is partial and it's not clear whether the user intended to sign or not to sign.
      */
     public boolean isConfigured() {
-        LOG.info("Private key: {}, certificates: {}", privateKey, certificates);
+        LOG.log(Level.INFO, "Private key: {}, certificates: {}", new Object[] {privateKey, certificates});
         return privateKey.exists() && certificates.get(0).exists();
     }
 
@@ -81,7 +81,7 @@ public class Signer {
         Signature sign = new Signature();
 
         if (!isConfigured()) {
-            LOG.warn("Can't find certificate {} or private key {}, skipping sign", certificates.get(0), privateKey);
+            LOG.log(Level.WARNING, "Can't find certificate {} or private key {}, skipping sign", new Object[] {certificates.get(0), privateKey});
             return sign;
         }
 
