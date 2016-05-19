@@ -21,7 +21,7 @@ import static ru.lanwen.jenkins.juseppe.util.Marshaller.serializerForReleaseHist
  */
 public class UpdateSiteGen {
 
-    private static final String[] PLUGIN_EXT = new String[]{"hpi"};
+    private static final String[] PLUGIN_EXT = new String[]{"hpi", "jpi"};
     private static final Logger LOG = Logger.getLogger(UpdateSiteGen.class.getName());
 
     private UpdateSite site = new UpdateSite()
