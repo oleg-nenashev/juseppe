@@ -60,7 +60,7 @@ public class UpdateSiteGen {
         ).register(
                 site -> {
                     try {
-                        site.setSignature(new Signer().sign(site));
+                        site.setSignature(new Signer(props).sign(site));
                     } catch (GeneralSecurityException | IOException e) {
                         throw new RuntimeException("Can't generate signature", e);
                     }

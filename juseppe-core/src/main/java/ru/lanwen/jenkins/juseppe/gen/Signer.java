@@ -34,6 +34,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.security.Security.addProvider;
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang3.Validate.isInstanceOf;
+import ru.lanwen.jenkins.juseppe.props.Props;
 import static ru.lanwen.jenkins.juseppe.props.Props.populated;
 
 /**
@@ -42,23 +43,46 @@ import static ru.lanwen.jenkins.juseppe.props.Props.populated;
 public class Signer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Signer.class);
-
+    
+    /**
+     * Signer properties.
+     */
+    private final Props props;
+    
     /**
      * Private key to sign the update center. Must be used in conjunction with certificates
      */
-    private File privateKey = new File(populated().getKeyPath());
+    private final File privateKey;
 
     /**
      * X509 certificate for the private key given by the privateKey option.
      * Specify additional certificate options to pass in intermediate certificates, if any
      */
-    private List<File> certificates = new ArrayList<>(Collections.singleton(new File(populated().getCertPath())));
+    private final List<File> certificates;
 
     /**
      * Additional root certificates. Should contain your certificate if it self-signed
      */
-    private List<File> rootCA = new ArrayList<>(Collections.singleton(new File(populated().getCertPath())));
+    private final List<File> rootCA;
 
+    /**
+     * Initializes signer by default properties populated from {@link #populated()}.
+     */
+    public Signer() {
+        this(populated());
+    }
+    
+    /**
+     * Initializes Signer by custom properties.
+     * @param props Properties
+     * @since TODO
+     */
+    public Signer(Props props) {
+        this.props = props;
+        this.privateKey = new File(props.getKeyPath());
+        this.certificates = new ArrayList<>(Collections.singleton(new File(props.getCertPath())));
+        this.rootCA = new ArrayList<>(Collections.singleton(new File(props.getCertPath())));
+    }
 
     /**
      * Checks if the signer is properly configured to generate a signature
